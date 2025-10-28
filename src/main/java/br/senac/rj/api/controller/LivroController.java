@@ -1,7 +1,10 @@
 package br.senac.rj.api.controller;
 
+import br.senac.rj.api.exceptions.ResourceNotFoundException;
 import br.senac.rj.api.model.Livro;
 import br.senac.rj.api.service.LivroService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,11 +46,12 @@ public class LivroController {
     }
 
     @GetMapping("/livros/{codigo}")
-    public Optional<Livro> buscarLivroPorCodigo(@PathVariable Long codigo) {
-        if (this.livroService.buscarLivroPorCodigo(codigo).isPresent()) {
-            return this.livroService.buscarLivroPorCodigo(codigo);
-        } else {
-            throw new RuntimeException("Livro não encontrado com o código: " + codigo);
+    public ResponseEntity<?> buscarLivroPorCodigo(@PathVariable Long codigo) {
+        try {
+            Livro livro = this.livroService.buscarLivroPorCodigo(codigo);
+            return ResponseEntity.ok(livro);
+        } catch (ResourceNotFoundException rnfe) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(rnfe.getMessage());
         }
     }
 }

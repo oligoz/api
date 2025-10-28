@@ -1,5 +1,6 @@
 package br.senac.rj.api.service;
 
+import br.senac.rj.api.exceptions.ResourceNotFoundException;
 import br.senac.rj.api.model.Livro;
 import br.senac.rj.api.repository.LivroRepository;
 import org.springframework.stereotype.Service;
@@ -23,8 +24,15 @@ public class LivroService {
         return this.livroRepository.save(livro);
     }
 
-    public Optional<Livro> buscarLivroPorCodigo(Long codigo) {
-        return this.livroRepository.findById(codigo);
+    public Livro buscarLivroPorCodigo(Long codigo) {
+        String mensagem = "Livro não encontrado com o código: " + codigo;
+        Optional<Livro> livro = this.livroRepository.findById(codigo);
+        if (livro.isEmpty()) {
+            throw new ResourceNotFoundException(mensagem);
+        }
+
+        Livro l = livro.get();
+        return l;
     }
 
     public void excluirLivro(Long codigo) {
@@ -34,13 +42,10 @@ public class LivroService {
     public Livro atualizarLivro(Long codigo, Livro livroAtualizado) {
         Optional<Livro> livro = this.livroRepository.findById(codigo);
 
-        if (livro.isPresent()) {
-            Livro livroExistente = livro.get();
-            livroExistente.setTitulo(livroAtualizado.getTitulo());
-            livroExistente.setPreco(livroAtualizado.getPreco());
-            return this.livroRepository.save(livroExistente);
-        } else {
-            throw new RuntimeException("Livro não encontrado com o código: " + codigo);
-        }
+        Livro livroExistente = livro.get();
+        livroExistente.setTitulo(livroAtualizado.getTitulo());
+        livroExistente.setPreco(livroAtualizado.getPreco());
+        return this.livroRepository.save(livroExistente);
+
     }
 }
