@@ -3,6 +3,7 @@ package br.senac.rj.api.service;
 import br.senac.rj.api.exceptions.ResourceNotFoundException;
 import br.senac.rj.api.model.Livro;
 import br.senac.rj.api.repository.LivroRepository;
+import br.senac.rj.api.validate.LivroValidate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,17 +18,24 @@ public class LivroService {
     }
 
     public List<Livro> listarLivros() {
+        List<Livro> livros = this.livroRepository.findAll();
+        if (livros.isEmpty()) {
+            String mensagem = "Nenhum livro cadastrado.";
+            throw new ResourceNotFoundException(mensagem);
+        }
         return this.livroRepository.findAll();
     }
 
     public Livro incluirLivro(Livro livro) {
+        LivroValidate.validarTitulo(livro.getTitulo());
+        LivroValidate.validarPreco(livro.getPreco());
         return this.livroRepository.save(livro);
     }
 
     public Livro buscarLivroPorCodigo(Long codigo) {
-        String mensagem = "Livro não encontrado com o código: " + codigo;
         Optional<Livro> livro = this.livroRepository.findById(codigo);
         if (livro.isEmpty()) {
+            String mensagem = "Livro não encontrado com o código: " + codigo;
             throw new ResourceNotFoundException(mensagem);
         }
 
@@ -36,6 +44,11 @@ public class LivroService {
     }
 
     public void excluirLivro(Long codigo) {
+        Optional<Livro> livro = this.livroRepository.findById(codigo);
+        if (livro.isEmpty()) {
+            String mensagem = "Livro não encontrado com o código: " + codigo;
+            throw new ResourceNotFoundException(mensagem);
+        }
         this.livroRepository.deleteById(codigo);
     }
 
@@ -43,6 +56,10 @@ public class LivroService {
         Optional<Livro> livro = this.livroRepository.findById(codigo);
 
         Livro livroExistente = livro.get();
+
+        LivroValidate.validarTitulo(livroAtualizado.getTitulo());
+        LivroValidate.validarPreco(livroAtualizado.getPreco());
+
         livroExistente.setTitulo(livroAtualizado.getTitulo());
         livroExistente.setPreco(livroAtualizado.getPreco());
         return this.livroRepository.save(livroExistente);

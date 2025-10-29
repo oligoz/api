@@ -1,5 +1,6 @@
 package br.senac.rj.api.controller;
 
+import br.senac.rj.api.exceptions.AtributeNotValidException;
 import br.senac.rj.api.exceptions.ResourceNotFoundException;
 import br.senac.rj.api.model.Livro;
 import br.senac.rj.api.service.LivroService;
@@ -8,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -21,28 +21,48 @@ public class LivroController {
     }
 
     @GetMapping("/livros")
-    public List<Livro> listarLivros() {
-        return this.livroService.listarLivros();
+    public ResponseEntity<?> listarLivros() {
+        try {
+            List<Livro> livros = this.livroService.listarLivros();
+            return ResponseEntity.ok(livros);
+        } catch (ResourceNotFoundException rnfe) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(rnfe.getMessage());
+        }
     }
 
     @PostMapping("/livros")
-    public Livro incluirLivro(@RequestBody Livro livro) {
-        return this.livroService.incluirLivro(livro);
+    public ResponseEntity<?> incluirLivro(@RequestBody Livro livro) {
+        try {
+            Livro novoLivro = this.livroService.incluirLivro(livro);
+            return ResponseEntity.status(HttpStatus.CREATED).body(novoLivro);
+        } catch (AtributeNotValidException anve) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(anve.getMessage());
+        }
     }
 
     @PutMapping("/livros/{codigo}")
-    public Livro atualizarLivro(@PathVariable Long codigo, @RequestBody Livro livroAtualizado) {
-        return this.livroService.atualizarLivro(codigo, livroAtualizado);
-    }
-
-    @DeleteMapping("/livros/delete")
-    public void excluirLivro(@RequestBody Long codigo) {
-        this.livroService.excluirLivro(codigo);
+    public ResponseEntity<?> atualizarLivro(@PathVariable Long codigo, @RequestBody Livro livroAtualizado) {
+        try {
+            this.livroService.buscarLivroPorCodigo(codigo);
+        } catch (ResourceNotFoundException rnfe) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(rnfe.getMessage());
+        }
+        try {
+            Livro novoLivroAtualizado = this.livroService.atualizarLivro(codigo, livroAtualizado);
+            return ResponseEntity.ok(novoLivroAtualizado);
+        } catch (AtributeNotValidException anve) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Não é possível atualizar. " + anve.getMessage());
+        }
     }
 
     @DeleteMapping("/livros/delete/{codigo}")
-    public void excluirLivro2(@PathVariable Long codigo) {
-        this.livroService.excluirLivro(codigo);
+    public ResponseEntity<?> excluirLivro(@PathVariable Long codigo) {
+        try {
+            this.livroService.excluirLivro(codigo);
+            return ResponseEntity.ok("Livro excluído com sucesso.");
+        } catch (ResourceNotFoundException rnfe) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(rnfe.getMessage());
+        }
     }
 
     @GetMapping("/livros/{codigo}")
