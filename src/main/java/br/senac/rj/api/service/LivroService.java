@@ -23,7 +23,7 @@ public class LivroService {
             String mensagem = "Nenhum livro cadastrado.";
             throw new ResourceNotFoundException(mensagem);
         }
-        return this.livroRepository.findAll();
+        return livros;
     }
 
     public Livro incluirLivro(Livro livro) {
@@ -63,6 +63,5 @@ public class LivroService {
         livroExistente.setTitulo(livroAtualizado.getTitulo());
         livroExistente.setPreco(livroAtualizado.getPreco());
         return this.livroRepository.save(livroExistente);
-
     }
 }
