@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Livros</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+    <div class="container text-center">
+        <h1 class="text-center mb-8 border-bottom border-dark">Lista de Livros (SB)</h1>
+        <div class="w-50 mx-auto">
+            <div th:if="${msg}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <span th:text="${msg}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <div th:if="${erro}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <span th:text="${erro}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <a class="btn btn-outline-primary btn-lg mb-3" href="/livros/registrar">Registrar Livro</a>
+
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Código</th>
+                        <th scope="col">Titulo</th>
+                        <th scope="col">Preço</th>
+                        <th scope="col">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="livro: ${livros}">
+                        <td th:text="${livro.codigo}" class="text-center"></td>
+                        <td th:text="${livro.titulo}" class="text-left"></td>
+                        <td th:text="${livro.preco}"  class="text-right"></td>
+                        <td>
+                            <a class="btn btn-outline-primary"
+                               th:href="@{/livros/editar(codigo=${livro.codigo})}"
+                               title="Editar">
+                                <i class="material-icons">edit</i>
+                            </a>
+                            <a class="btn btn-outline-primary"
+                               th:href="@{/livros/excluir(codigo=${livro.codigo})}"
+                               title="Excluir">
+                                <i class="material-icons">delete</i>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</body>
+</html>

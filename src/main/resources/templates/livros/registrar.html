@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Livro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center my-8 border-bottom border-dark">Registrar Livro (SB)</h1>
+        <div class="w-50 mx-auto">
+            <form th:action="@{/livros/registrar}" th:object="${livro}" method="post">
+                <div class="mb-3">
+                    <label for="titulo" class="form-label">Título</label>
+                    <input type="text" class="form-control" id="titulo" th:field="*{titulo}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="preco" class="form-label">Preço</label>
+                    <input type="number" class="form-control" id="preco" th:field="*{preco}" required>
+                </div>
+                <div class="text-center mb-3">
+                    <button type="submit" class="btn btn-outline-secondary">Registrar</button>
+                    <a href="/livros" class="btn btn-outline-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</body>
+</html>
