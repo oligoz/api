@@ -35,21 +35,41 @@ public class LivroWebController {
 
     @PostMapping("/registrar")
     public String postRegistrarLivro(@ModelAttribute Livro livro, RedirectAttributes redirectAttributes) {
-        this.livroService.incluirLivro(livro);
-        redirectAttributes.addFlashAttribute("msg", "Livro registrado com sucesso!");
+        try {
+            this.livroService.incluirLivro(livro);
+            redirectAttributes.addFlashAttribute("msg", "Livro registrado com sucesso!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("erro", "Erro ao registrar o livro: " + e.getMessage());
+        }
         return "redirect:/livros";
     }
 
     @GetMapping("/editar")
-    public String getEditarLivroForm(Long codigo, Model model) {
+    public String getEditarLivroForm(@RequestParam("codigo") Long codigo, Model model) {
         Livro livro = this.livroService.buscarLivroPorCodigo(codigo);
         model.addAttribute("livro", livro);
         return "livros/editar";
     }
 
     @PostMapping("/editar")
-    public String postEditarLivro(@ModelAttribute Livro livro) {
-        this.livroService.atualizarLivro(livro.getCodigo(), livro);
+    public String postEditarLivro(@RequestParam("codigo") Long codigo, @ModelAttribute Livro livro, RedirectAttributes redirectAttributes) {
+        try {
+            this.livroService.atualizarLivro(codigo, livro);
+            redirectAttributes.addFlashAttribute("msg", "Livro atualizado com sucesso!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("erro", "Erro ao atualizar o livro: " + e.getMessage());
+        }
+        return "redirect:/livros";
+    }
+
+    @GetMapping("/excluir")
+    public String excluirLivro(@RequestParam("codigo") Long codigo, RedirectAttributes redirectAttributes) {
+        try {
+            this.livroService.excluirLivro(codigo);
+            redirectAttributes.addFlashAttribute("msg", "Livro excluído com sucesso!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("erro", "Erro ao excluir o livro: " + e.getMessage());
+        }
         return "redirect:/livros";
     }
 }
