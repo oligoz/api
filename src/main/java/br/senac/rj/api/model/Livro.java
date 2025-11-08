@@ -21,6 +21,9 @@ public class Livro {
 //    @Setter
     private Double preco;
 
+    @ManyToOne
+    private Lingua lingua;
+
     public Livro(){
 
     }
@@ -48,5 +51,13 @@ public class Livro {
 
     public void setPreco(Double preco) {
         this.preco = preco;
+    }
+
+    public Lingua getLingua() {
+        return lingua;
+    }
+
+    public void setLingua(Lingua lingua) {
+        this.lingua = lingua;
     }
 }

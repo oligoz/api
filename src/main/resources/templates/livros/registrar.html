@@ -19,6 +19,16 @@
                     <label for="preco" class="form-label">Preço</label>
                     <input type="number" class="form-control" id="preco" th:field="*{preco}" required>
                 </div>
+                <div class="mb-3">
+                    <label for="lingua" class="form-label">lingua</label>
+                    <select class="form-control" id="lingua" th:field="*{lingua}" required>
+                        <option th:each="lingua: ${linguas}"
+                                th:value="${lingua.codigo}"
+                                th:text="${lingua.descricao}">
+                        </option>
+                    </select>
+                    <a href="/livros/registrarLingua" class="btn btn-link btn-sm mt-2">Registrar nova lingua</a>
+                </div>
                 <div class="text-center mb-3">
                     <button type="submit" class="btn btn-outline-secondary">Registrar</button>
                     <a href="/livros" class="btn btn-outline-secondary">Cancelar</a>

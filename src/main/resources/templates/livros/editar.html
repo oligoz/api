@@ -19,8 +19,17 @@
                 <input type="text" class="form-control" id="titulo" th:field="*{titulo}" required>
             </div>
             <div class="mb-3">
-                <label for="preco" class="form-label">Nome</label>
+                <label for="preco" class="form-label">preço</label>
                 <input type="number" class="form-control" id="preco" th:field="*{preco}" required>
+            </div>
+            <div class="mb-3">
+                <label for="lingua" class="form-label">lingua</label>
+                <select class="form-control" id="lingua" th:field="*{lingua}" required>
+                    <option th:each="lingua: ${linguas}"
+                            th:value="${lingua.codigo}"
+                            th:text="${lingua.descricao}">
+                    </option>
+                </select>
             </div>
             <div class="text-center mb-3">
                 <button type="submit" class="btn btn-outline-secondary">Atualizar</button>

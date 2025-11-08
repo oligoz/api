@@ -62,6 +62,7 @@ public class LivroService {
 
         livroExistente.setTitulo(livroAtualizado.getTitulo());
         livroExistente.setPreco(livroAtualizado.getPreco());
+        livroExistente.setLingua(livroAtualizado.getLingua());
         return this.livroRepository.save(livroExistente);
     }
 }

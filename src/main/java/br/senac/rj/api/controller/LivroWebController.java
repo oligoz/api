@@ -1,6 +1,8 @@
 package br.senac.rj.api.controller;
 
+import br.senac.rj.api.model.Lingua;
 import br.senac.rj.api.model.Livro;
+import br.senac.rj.api.service.LinguaService;
 import br.senac.rj.api.service.LivroService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,9 +16,11 @@ import java.util.List;
 public class LivroWebController {
 
     private final LivroService livroService;
+    private final LinguaService linguaService;
 
-    public LivroWebController(LivroService livroService) {
+    public LivroWebController(LivroService livroService, LinguaService linguaService) {
         this.livroService = livroService;
+        this.linguaService = linguaService;
     }
 
     @GetMapping
@@ -29,7 +33,9 @@ public class LivroWebController {
     @GetMapping("/registrar")
     public String getRegistrarLivroForm(Model model) {
         Livro livro = new Livro();
+        List<Lingua> linguas= this.linguaService.listarLinguas();
         model.addAttribute("livro", livro);
+        model.addAttribute("linguas", linguas);
         return "livros/registrar";
     }
 
@@ -44,10 +50,30 @@ public class LivroWebController {
         return "redirect:/livros";
     }
 
+    @GetMapping("/registrarLingua")
+    public String getRegistrarLinguaForm(Model model) {
+        Lingua lingua = new Lingua();
+        model.addAttribute("lingua", lingua);
+        return "livros/registrarLingua";
+    }
+
+    @PostMapping("/registrarLingua")
+    public String postRegistrarLingua(@ModelAttribute Lingua lingua, RedirectAttributes redirectAttributes) {
+        try {
+            this.linguaService.incluirLingua(lingua);
+            redirectAttributes.addFlashAttribute("msg", "Língua registrada com sucesso!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("erro", "Erro ao registrar a língua: " + e.getMessage());
+        }
+        return "redirect:/livros/registrar";
+    }
+
     @GetMapping("/editar")
     public String getEditarLivroForm(@RequestParam("codigo") Long codigo, Model model) {
+        List<Lingua> linguas= this.linguaService.listarLinguas();
         Livro livro = this.livroService.buscarLivroPorCodigo(codigo);
         model.addAttribute("livro", livro);
+        model.addAttribute("linguas", linguas);
         return "livros/editar";
     }
 

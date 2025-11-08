@@ -28,6 +28,7 @@
                         <th scope="col">Código</th>
                         <th scope="col">Titulo</th>
                         <th scope="col">Preço</th>
+                        <th scope="col">Lingua</th>
                         <th scope="col">Ações</th>
                     </tr>
                 </thead>
@@ -36,6 +37,7 @@
                         <td th:text="${livro.codigo}" class="text-center"></td>
                         <td th:text="${livro.titulo}" class="text-left"></td>
                         <td th:text="${livro.preco}"  class="text-right"></td>
+                        <td th:text="${livro.lingua.descricao}"  class="text-right"></td>
                         <td>
                             <a class="btn btn-outline-primary"
                                th:href="@{/livros/editar(codigo=${livro.codigo})}"
